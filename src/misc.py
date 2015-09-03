@@ -5,6 +5,7 @@
 """
 
 import itertools
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -16,16 +17,19 @@ def viz_weights_categorical(W, classes, shape):
         @param shape    Shape of each weight vector in image form (tuple)
     """
     # Make sure the shape is correct
-    assert(reduce(lambda x, y: x*y, shape) == W.shape[1])
+    assert(reduce(lambda x, y: x*y, shape) == (W.shape[1] - 1))  # ignore bias
 
     # Depending on the choice of learning rate and regularization strength,
     # these may or may not be nice to look at.
-    w = svm.W[:, :-1]  # strip out the bias
+    w = W[:, :-1]  # strip out the bias
     w = np.reshape(w, tuple([W.shape[0]] + list(shape)))  # reshape to image form
     (w_min, w_max) = np.min(w), np.max(w)
+
+    # Determine the best way to display the images (favoring cols)
+    shape_opt = get_opt_viz_shape(W.shape[0])
+
+    fig = plt.figure()
     for i in xrange(W.shape[0]):
-        # Determine the best way to display the images (favoring cols)
-        shape_opt = get_opt_viz_shape(W.shape[0])
         plt.subplot(min(shape_opt), max(shape_opt), i + 1)
           
         # Rescale the weights to be between 0 and 255
@@ -33,6 +37,8 @@ def viz_weights_categorical(W, classes, shape):
         plt.imshow(wimg.astype('uint8'), interpolation='none')
         plt.axis('off')
         plt.title(classes[i])
+    fig.canvas.set_window_title('Visualization of Weights')
+    plt.show()
 
 
 def get_opt_viz_shape(N):

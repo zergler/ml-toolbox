@@ -74,9 +74,9 @@ def test_mnist():
 
     # Display a few examples from each class to make sure we got this working
     X = np.array(train[0])
-    Y = np.array(train[1])
+    y = np.array(train[1])
     classes = [str(i) for i in range(10)]
-    viz_categorical(X, Y, classes)
+    viz_categorical(X, y, classes)
 
 
 def main():
